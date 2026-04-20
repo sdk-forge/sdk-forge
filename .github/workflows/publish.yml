@@ -30,20 +30,7 @@ jobs:
       - name: Build
         run: npx tsc --build
 
-      - name: Publish @sdk-forge/core
-        run: npm publish --access public --provenance
-        working-directory: packages/core
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @sdk-forge/generator-typescript
-        run: npm publish --access public --provenance
-        working-directory: packages/generator-typescript
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish sdk-forge (CLI)
-        run: npm publish --access public --provenance
-        working-directory: packages/cli
+      - name: Publish
+        run: bunx changeset publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

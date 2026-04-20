@@ -143,6 +143,10 @@ See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for the full design document 
 
 Contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
 
+## Releasing
+
+Maintainers: see [RELEASING.md](./RELEASING.md) for the full release and publishing workflow.
+
 ## License
 
 MIT
