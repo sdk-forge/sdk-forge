@@ -297,6 +297,7 @@ function uniqueName(hint: string, taken: Set<string>): string {
 function pascalCase(str: string): string {
   return str
     .replace(/[-_/{}]/g, ' ')
+    .replace(/[^a-zA-Z0-9\s]/g, '')
     .split(/\s+/)
     .filter(Boolean)
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
