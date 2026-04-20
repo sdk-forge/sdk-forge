@@ -17,7 +17,7 @@ Thanks for your interest in contributing. This document covers everything you ne
 git clone https://github.com/<your-username>/sdk-forge.git
 cd sdk-forge
 
-# 2. Install dependencies
+# 2. Install dependencies (also installs git hooks via the prepare script)
 bun install
 
 # 3. Build all packages
@@ -146,6 +146,17 @@ Use the specs in `specs/` to test changes:
 | `specs/synthetic/auth.yaml` | Bearer, API key (header + query), and Basic auth schemes |
 
 If you're fixing a bug or adding a feature, add or extend a synthetic spec that exercises that case.
+
+## Git hooks
+
+sdk-forge uses [Husky](https://typicode.github.io/husky/) to enforce code quality locally. The hooks install automatically when you run `bun install` (via the `prepare` script):
+
+| Hook | When it runs | What it does |
+|------|-------------|--------------|
+| `pre-commit` | Before every commit | Runs `bunx tsc --build` — blocks the commit if there are type errors |
+| `pre-push` | Before every push | Runs `bun test` — blocks the push if any tests fail |
+
+You don't need to do anything to enable them. If you need to bypass a hook in exceptional circumstances (e.g. a WIP commit), use `git commit --no-verify` — but fix the issue before opening a PR.
 
 ## Submitting a pull request
 

@@ -2,7 +2,9 @@
   "name": "sdk-forge-workspace",
   "private": true,
   "version": "0.0.1",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "bun run --filter='*' build",
     "typecheck": "bun run --filter='*' typecheck",
@@ -11,10 +13,13 @@
     "test:integration": "RUN_INTEGRATION_TESTS=1 bun test tests/e2e/integration.test.ts",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "npx tsc --build && changeset publish"
+    "release": "bunx tsc --build && changeset publish",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
+    "@types/bun": "latest",
+    "husky": "^9.1.7",
     "typescript": "^5.5.0"
   }
 }
