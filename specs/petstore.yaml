@@ -1,0 +1,264 @@
+openapi: "3.0.3"
+info:
+  title: Petstore
+  description: A sample API demonstrating OpenAPI 3.0
+  version: "1.0.0"
+servers:
+  - url: https://petstore.swagger.io/v3
+    description: Public sandbox
+
+tags:
+  - name: pets
+    description: Everything about pets
+  - name: store
+    description: Access to Petstore orders
+
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      summary: List all pets
+      tags: [pets]
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Maximum number of pets to return
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PetStatus'
+          description: Filter by status
+      responses:
+        "200":
+          description: A list of pets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetList'
+        "default":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      operationId: createPet
+      summary: Create a pet
+      tags: [pets]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPet'
+      responses:
+        "201":
+          description: The created pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        "default":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /pets/{petId}:
+    get:
+      operationId: getPet
+      summary: Get a pet by ID
+      tags: [pets]
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The pet ID
+      responses:
+        "200":
+          description: The pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        "404":
+          description: Pet not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      operationId: updatePet
+      summary: Update a pet
+      tags: [pets]
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPet'
+      responses:
+        "200":
+          description: The updated pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+
+    delete:
+      operationId: deletePet
+      summary: Delete a pet
+      tags: [pets]
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Pet deleted
+
+  /store/orders:
+    post:
+      operationId: createOrder
+      summary: Place an order
+      tags: [store]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewOrder'
+      responses:
+        "201":
+          description: Order placed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /store/orders/{orderId}:
+    get:
+      operationId: getOrder
+      summary: Get an order
+      tags: [store]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: The order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: JWT bearer token
+
+  schemas:
+    PetStatus:
+      type: string
+      enum: [available, pending, sold]
+
+    Pet:
+      type: object
+      required: [id, name, status]
+      properties:
+        id:
+          type: integer
+          description: Unique pet identifier
+        name:
+          type: string
+          description: Pet name
+        status:
+          $ref: '#/components/schemas/PetStatus'
+        tag:
+          type: string
+          description: Optional tag
+
+    NewPet:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/PetStatus'
+        tag:
+          type: string
+
+    PetList:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pet'
+        total:
+          type: integer
+
+    OrderStatus:
+      type: string
+      enum: [pending, processing, shipped, delivered, cancelled]
+
+    Order:
+      type: object
+      required: [id, petId, status, quantity]
+      properties:
+        id:
+          type: integer
+        petId:
+          type: integer
+        quantity:
+          type: integer
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        shipDate:
+          type: string
+
+    NewOrder:
+      type: object
+      required: [petId, quantity]
+      properties:
+        petId:
+          type: integer
+        quantity:
+          type: integer
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: integer
+        message:
+          type: string

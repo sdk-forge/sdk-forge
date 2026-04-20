@@ -1,0 +1,14 @@
+{
+  "name": "sdk-forge-workspace",
+  "private": true,
+  "version": "0.0.1",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "bun run --filter='*' build",
+    "typecheck": "bun run --filter='*' typecheck",
+    "clean": "bun run --filter='*' clean"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

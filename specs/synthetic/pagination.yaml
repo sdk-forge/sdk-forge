@@ -1,0 +1,137 @@
+openapi: "3.0.3"
+info:
+  title: Pagination Patterns
+  description: Synthetic spec exercising cursor, offset, and link-header pagination
+  version: "1.0.0"
+servers:
+  - url: https://api.example.com/v1
+
+paths:
+  /items/cursor:
+    get:
+      operationId: listItemsCursor
+      summary: Cursor-based pagination
+      description: |
+        Returns a page of items with a cursor for the next page.
+        Pass the `cursor` value from the previous response as the `after` parameter.
+      parameters:
+        - name: after
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Cursor from previous response
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Number of items per page (max 100)
+      responses:
+        "200":
+          description: A page of items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CursorPage'
+
+  /items/offset:
+    get:
+      operationId: listItemsOffset
+      summary: Offset/limit pagination
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Page number (1-indexed)
+        - name: perPage
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Items per page
+      responses:
+        "200":
+          description: A page of items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OffsetPage'
+
+  /items/link-header:
+    get:
+      operationId: listItemsLinkHeader
+      summary: Link-header pagination (GitHub style)
+      description: |
+        Pagination is communicated via the `Link` response header.
+        Parse the `rel="next"` URL to get the next page.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A page of items
+          headers:
+            Link:
+              description: 'Pagination links, e.g. <url>; rel="next", <url>; rel="prev"'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+
+components:
+  schemas:
+    Item:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+
+    CursorPage:
+      type: object
+      required: [items, hasMore]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        hasMore:
+          type: boolean
+        cursor:
+          type: string
+          description: Pass this as `after` to get the next page. Absent when hasMore is false.
+
+    OffsetPage:
+      type: object
+      required: [items, total, page, perPage]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        total:
+          type: integer
+          description: Total number of items across all pages
+        page:
+          type: integer
+        perPage:
+          type: integer

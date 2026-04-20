@@ -1,0 +1,47 @@
+{
+  "name": "sdk-forge",
+  "version": "0.0.1",
+  "description": "Generate production-quality SDKs from OpenAPI specs — free, open-source alternative to Fern and Stainless",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "sdk-forge": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sdk-forge/sdk-forge.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/sdk-forge/sdk-forge#readme",
+  "bugs": {
+    "url": "https://github.com/sdk-forge/sdk-forge/issues"
+  },
+  "keywords": [
+    "openapi",
+    "sdk",
+    "codegen",
+    "generator",
+    "cli",
+    "typescript",
+    "sdk-forge"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "dev": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@sdk-forge/core": "workspace:*",
+    "@sdk-forge/generator-typescript": "workspace:*",
+    "citty": "^0.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,25 @@
+export type {
+  ApiSpec,
+  ApiInfo,
+  Server,
+  Operation,
+  HttpMethod,
+  ParameterLocation,
+  Parameter,
+  RequestBody,
+  ResponseDef,
+  TypeRef,
+  PrimitiveType,
+  TypeDef,
+  ObjectTypeDef,
+  Property,
+  EnumTypeDef,
+  UnionTypeDef,
+  AliasTypeDef,
+  AuthScheme,
+  AuthSchemeKind,
+  PaginationConfig,
+  PaginationKind,
+} from './types.js';
+
+export { buildIR } from './builder.js';

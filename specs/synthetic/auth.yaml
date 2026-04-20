@@ -1,0 +1,135 @@
+openapi: "3.0.3"
+info:
+  title: Auth Patterns
+  description: Synthetic spec exercising different OpenAPI authentication schemes
+  version: "1.0.0"
+servers:
+  - url: https://api.example.com/v1
+
+security: []  # No global auth — applied per-operation
+
+paths:
+  /public/ping:
+    get:
+      operationId: ping
+      summary: Public endpoint, no auth required
+      responses:
+        "200":
+          description: Pong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingResponse'
+
+  /bearer/profile:
+    get:
+      operationId: getBearerProfile
+      summary: Protected by Bearer token (JWT)
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        "401":
+          description: Unauthorized
+
+  /apikey-header/data:
+    get:
+      operationId: getApiKeyHeaderData
+      summary: Protected by API key in header (X-API-Key)
+      security:
+        - ApiKeyHeader: []
+      responses:
+        "200":
+          description: Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+
+  /apikey-query/data:
+    get:
+      operationId: getApiKeyQueryData
+      summary: Protected by API key in query param
+      security:
+        - ApiKeyQuery: []
+      responses:
+        "200":
+          description: Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+
+  /basic/resource:
+    get:
+      operationId: getBasicResource
+      summary: Protected by HTTP Basic auth
+      security:
+        - BasicAuth: []
+      responses:
+        "200":
+          description: Resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: JWT issued by the auth server
+
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key passed in the X-API-Key header
+
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_key
+      description: API key passed as a query parameter
+
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: Username and password
+
+  schemas:
+    PingResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+
+    Profile:
+      type: object
+      required: [id, email]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+
+    DataResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: string
+        meta:
+          type: object
+          properties:
+            requestId:
+              type: string
